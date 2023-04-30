@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod time_tests {
     // use super::*;
-    use std::time::{Duration, SystemTime};
+    use std::time::{Duration, SystemTime, SystemTimeError};
 
     // #[test]
     // fn system_time() {
@@ -25,7 +25,10 @@ mod time_tests {
 
     #[test]
     fn system_time_duration_since_unix_epoch() {
-        let sec = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+        let now:SystemTime = SystemTime::now();
+        let epoch:SystemTime = SystemTime::UNIX_EPOCH;
+        let duration:Result<Duration, SystemTimeError> = now.duration_since(epoch);
+        let sec = match duration {
             // since 1970
             Ok(n) => n.as_secs(),
             Err(_) => panic!("SystemTime before UNIX EPOCH!"),
@@ -33,7 +36,7 @@ mod time_tests {
         let years = sec / 60 / 60 / 24 / 365;
         assert!(52 < years);
     }
- 
+
     #[test]
     fn system_time_duration() {
         let duration = Duration::new(5, 730023852);
